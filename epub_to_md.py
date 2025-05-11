@@ -59,4 +59,6 @@ def process_all_epubs():
 
 if __name__ == "__main__":
     process_all_epubs()
+    print("\n全部文件已经转换完毕，请在output目录下查看转换后的文件")
+    input("按回车键退出")  
     
