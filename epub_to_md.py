@@ -7,11 +7,21 @@ import glob
 import re
 
 def clean_text(text):
-    # 移除 XML 声明，例如：<?xml version="1.0" encoding="utf-8"?>
-    text = re.sub(r'<\?xml[^>]*\?>', '', text)
-    # 移除HTML锚点链接
+    """
+    对最终 Markdown 文本做清理：
+    1. 移除 XML 声明（包括被转义成 &lt;?xml ...?&gt; 的情况）
+    2. 移除 HTML 锚点链接
+    3. 合并多余空行并去掉首尾空白
+    """
+    # 移除原始 XML 声明，例如：<?xml version="1.0" encoding="utf-8"?>
+    text = re.sub(r'<\?xml[^>]*\?>', '', text, flags=re.IGNORECASE)
+    # 移除被转义成 Markdown 里的 XML 声明：&lt;?xml version="1.0" encoding="utf-8"?&gt;
+    text = re.sub(r'&lt;\?xml[^&]*\?&gt;', '', text, flags=re.IGNORECASE)
+
+    # 移除 HTML 锚点链接
     text = re.sub(r'\(text\d+\.html#[^)]+\)', '', text)
-    # 移除连续的空行
+
+    # 移除连续的空行（保留一个空行）
     text = re.sub(r'\n\s*\n', '\n\n', text)
     # 移除行首和行尾的空白字符
     text = text.strip()
