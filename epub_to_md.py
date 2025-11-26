@@ -7,6 +7,8 @@ import glob
 import re
 
 def clean_text(text):
+    # 移除 XML 声明，例如：<?xml version="1.0" encoding="utf-8"?>
+    text = re.sub(r'<\?xml[^>]*\?>', '', text)
     # 移除HTML锚点链接
     text = re.sub(r'\(text\d+\.html#[^)]+\)', '', text)
     # 移除连续的空行
