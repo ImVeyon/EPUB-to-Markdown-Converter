@@ -17,6 +17,18 @@ def clean_text(text):
     text = re.sub(r'<\?xml[^>]*\?>', '', text, flags=re.IGNORECASE)
     # 移除被转义成 Markdown 里的 XML 声明：&lt;?xml version="1.0" encoding="utf-8"?&gt;
     text = re.sub(r'&lt;\?xml[^&]*\?&gt;', '', text, flags=re.IGNORECASE)
+    # 移除可能被拆开的纯文本形式，例如：xml version='1.0' encoding='utf-8'?
+    text = re.sub(
+        r'(?i)xml\s*version\s*=\s*[\'"].*?[\'"]\s*encoding\s*=\s*[\'"].*?[\'"]\??',
+        '',
+        text,
+    )
+    # 兜底：整行里只要同时包含 xml version 和 encoding 关键字，就整行删除
+    text = re.sub(
+        r'(?im)^.*xml\s+version.*encoding.*$\n?',
+        '',
+        text,
+    )
 
     # 移除 HTML 锚点链接
     text = re.sub(r'\(text\d+\.html#[^)]+\)', '', text)
